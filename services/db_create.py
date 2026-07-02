@@ -17,7 +17,24 @@ def run_database():
                 )
             )
 
-            return True, conn
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS usuarios (
+                    id INTEGER PRIMARY KEY,
+                    usuario TEXT NOT NULL UNIQUE,
+                    senha TEXT NOT NULL,
+                    admin INTEGER NOT NULL DEFAULT 0,
+                    data_criacao TEXT NOT NULL,
+                    entrada TEXT,
+                    saida TEXT
+                )
+            """)
+
+            conn.commit()
+            conn.close()
+
+            return True, f"Criado com sucesso!"
 
         return False, None
 
