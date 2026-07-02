@@ -13,7 +13,7 @@ def run_database():
             conn = sqlite3.connect(
                 os.path.join(
                     "database",
-                    "base.db"
+                    "DATABASE.db"
                 )
             )
 
@@ -36,7 +36,7 @@ def run_database():
 
             return True, f"Criado com sucesso!"
 
-        return False, None
+        return False, f"Erro ao criar!"
 
     except PermissionError as e:
         return False, f"Erro de permissão"
