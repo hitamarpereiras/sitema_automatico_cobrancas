@@ -5,9 +5,6 @@ from PIL import Image, ImageTk
 
 ctk.set_appearance_mode("dark")
 
-color1 = "#fc3a51"
-color2 = "#6b6d6a"
-color3 = "#040605"
 
 def show_logo():
     img = Image.open(
@@ -38,7 +35,7 @@ class Aplication(ctk.CTk):
         super().__init__()
 
         self.configure(
-            fg_color = color2
+            fg_color = "#6b6d6a"
         )
 
         self.image_types = None
@@ -60,66 +57,74 @@ class Aplication(ctk.CTk):
 
         self.grid_columnconfigure(0, weight=1)
 
-        logo = ctk.CTkLabel(
-            self,
-            image=show_logo(),
-            text=""
-        )
-        logo.pack(pady=(10, 10))
 
-        title = ctk.CTkLabel(
-            self,
-            text="Login",
-            font=("Arial", 40, "bold")
-        )
-        title.pack(pady=(10, 10))
-
-        # Frame
-        self.form = ctk.CTkScrollableFrame(
+        # Container Login
+        self.container = ctk.CTkFrame(
             self,
             width=480,
             height=500,
-            fg_color=color2
+            fg_color="#6b6d6a"
         )
-        self.form.pack(
+        self.container.pack(
             fill="both", 
             expand=True, 
             padx=10, 
             pady=10
         )
 
+        logo = ctk.CTkLabel(
+            self.container,
+            image=show_logo(),
+            text=""
+        )
+        logo.pack(pady=(10, 10))
+
+        title = ctk.CTkLabel(
+            self.container,
+            text="Login",
+            font=("Arial", 40, "bold")
+        )
+        title.pack(pady=(8, 8))
+
+        title = ctk.CTkLabel(
+            self.container,
+            text="Se não tiver cadastro por favor\ninsira as informações e clique em REGISTRAR!",
+            font=("Arial", 12, "bold")
+        )
+        title.pack(pady=(5, 5))
+
         labeName = ctk.CTkLabel(
-            self.form,
+            self.container,
             text="Nome de Usuário:"
         )
         labeName.pack()
 
         username = ctk.CTkEntry(
-            self.form,
+            self.container,
             width=200,
             height=40
         )
         username.pack()
 
         LabelPassw = ctk.CTkLabel(
-            self.form,
+            self.container,
             text="Senha:"
         )
         LabelPassw.pack()
 
         password = ctk.CTkEntry(
-            self.form,
+            self.container,
             width=200,
             height=40,
             show="*",
-            border_color=color2
+            border_color="#6b6d6a"
         )
         password.pack()
 
         btn_login = ctk.CTkButton(
-            self.form,
+            self.container,
             text="Automatizar agora!",
-            fg_color=color1,
+            fg_color="#fc3a51",
             hover_color="#b12a3a",
             text_color="white",
             width=200,
@@ -129,8 +134,8 @@ class Aplication(ctk.CTk):
         btn_login.pack(pady=10)
 
         btn_register = ctk.CTkButton(
-            self.form,
-            text="Registar!",
+            self.container,
+            text="Registrar!",
             fg_color="white",
             hover_color="#bababa",
             text_color="black",
