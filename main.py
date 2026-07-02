@@ -2,6 +2,7 @@ import customtkinter as ctk
 from tkinter import filedialog, messagebox
 import os
 from PIL import Image, ImageTk
+from services.db_create import run_database
 
 ctk.set_appearance_mode("dark")
 
@@ -41,7 +42,7 @@ class Aplication(ctk.CTk):
         self.image_types = None
 
         self.title('Sistema de Cobranças')
-        self.geometry("420x500")
+        self.geometry("420x560")
         self.resizable(False, False)
 
         self.iconbitmap(
@@ -88,10 +89,19 @@ class Aplication(ctk.CTk):
 
         title = ctk.CTkLabel(
             self.container,
-            text="Se não tiver cadastro por favor\ninsira as informações e clique em REGISTRAR!",
+            text="Se não estiver cadastro por favor\ninsira as informações e clique em REGISTRAR!",
             font=("Arial", 12, "bold")
         )
         title.pack(pady=(5, 5))
+
+        LabelData = ctk.CTkLabel(
+            self.container,
+            fg_color="white",
+            text_color=self.alert_color,
+            text=self.response,
+            font=("Arial", 12, "normal")
+        )
+        LabelData.pack(pady=(1, 1), padx=(1, 1))
 
         labeName = ctk.CTkLabel(
             self.container,
@@ -146,6 +156,20 @@ class Aplication(ctk.CTk):
         btn_register.pack(pady=10)
 
 
+        LabelFooter = ctk.CTkLabel(
+            self,
+            text_color="#252525",
+            text="© 2026 Hitamar Silva",
+            font=("Arial", 12, "italic")
+        )
+        LabelFooter.pack(pady=10)
+
+    bln, response = run_database()
+
+    if not bln:
+        alert_color = "#A60000"
+    else:
+        alert_color = "#007900"
 
 
 if __name__ == "__main__":

@@ -34,9 +34,9 @@ def run_database():
             conn.commit()
             conn.close()
 
-            return True, f"Criado com sucesso!"
+            return True, f"Database ON!"
 
-        return False, f"Erro ao criar!"
+        return False, f"Erro Database!"
 
     except PermissionError as e:
         return False, f"Erro de permissão"
