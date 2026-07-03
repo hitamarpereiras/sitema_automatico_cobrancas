@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
 import os
-from PIL import Image, ImageTk
+from PIL import Image
 from services.db_create import run_database
 
 ctk.set_appearance_mode("dark")
@@ -78,7 +78,7 @@ class Aplication(ctk.CTk):
             image=show_logo(),
             text=""
         )
-        logo.pack(pady=(10, 10))
+        logo.pack(pady=(5, 5))
 
         title = ctk.CTkLabel(
             self.container,
@@ -89,7 +89,7 @@ class Aplication(ctk.CTk):
 
         title = ctk.CTkLabel(
             self.container,
-            text="Se não estiver cadastro por favor\ninsira as informações e clique em REGISTRAR!",
+            text="Se não estiver registrado por favor\ninsira as informações e clique em REGISTRAR!",
             font=("Arial", 12, "bold")
         )
         title.pack(pady=(5, 5))
@@ -99,15 +99,17 @@ class Aplication(ctk.CTk):
             fg_color="white",
             text_color=self.alert_color,
             text=self.response,
+            height=14,
             font=("Arial", 12, "normal")
         )
-        LabelData.pack(pady=(1, 1), padx=(1, 1))
+        LabelData.pack(pady=(8, 8))
 
         labeName = ctk.CTkLabel(
             self.container,
-            text="Nome de Usuário:"
+            text="Nome de Usuário:",
+            width=305
         )
-        labeName.pack()
+        labeName.pack(anchor="w")
 
         username = ctk.CTkEntry(
             self.container,
@@ -118,9 +120,10 @@ class Aplication(ctk.CTk):
 
         LabelPassw = ctk.CTkLabel(
             self.container,
-            text="Senha:"
+            text="Senha:",
+            width=245
         )
-        LabelPassw.pack()
+        LabelPassw.pack(anchor="w")
 
         password = ctk.CTkEntry(
             self.container,
