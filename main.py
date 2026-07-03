@@ -3,6 +3,8 @@ from tkinter import filedialog, messagebox
 import os
 from PIL import Image
 from services.db_create import run_database
+from services.users import User
+from services.add_users import criar_usuario
 
 ctk.set_appearance_mode("dark")
 
@@ -21,14 +23,13 @@ def alert_sistem(msg, bln):
             "Ops!",
             f"{msg}"
         )
+        return
 
     messagebox.showinfo(
         "Sucesso!",
         f"{msg}"
     )
-
-def login():
-    alert_sistem("Muito bem dev!", True)
+    return
 
 
 class Aplication(ctk.CTk):
@@ -112,13 +113,13 @@ class Aplication(ctk.CTk):
         )
         labeName.pack(anchor="w")
 
-        username = ctk.CTkEntry(
+        self.username = ctk.CTkEntry(
             self.container,
             width=200,
             height=40,
             placeholder_text="Ex: joaosantos"
         )
-        username.pack()
+        self.username.pack()
 
         LabelPassw = ctk.CTkLabel(
             self.container,
@@ -128,14 +129,14 @@ class Aplication(ctk.CTk):
         )
         LabelPassw.pack(anchor="w")
 
-        password = ctk.CTkEntry(
+        self.password = ctk.CTkEntry(
             self.container,
             width=200,
             height=40,
             show="*",
             border_color="#6b6d6a"
         )
-        password.pack()
+        self.password.pack()
 
         btn_login = ctk.CTkButton(
             self.container,
@@ -145,7 +146,7 @@ class Aplication(ctk.CTk):
             text_color="white",
             width=200,
             height=40,
-            command=login
+            command=""
         )
         btn_login.pack(pady=10)
 
@@ -157,7 +158,7 @@ class Aplication(ctk.CTk):
             text_color="black",
             width=200,
             height=40,
-            command=""
+            command=self.register_user
         )
         btn_register.pack(pady=10)
 
@@ -176,6 +177,30 @@ class Aplication(ctk.CTk):
         alert_color = "#A60000"
     else:
         alert_color = "#007900"
+
+    def register_user(self):
+        username = self.username.get()
+        password = self.password.get()
+
+        new_user = User(
+            username=username,
+            password=password
+        )
+
+        bln, response = User.verify_data(new_user)
+
+        if not bln:
+            alert_sistem(response, bln)
+            return
+        else:
+            bln, response = criar_usuario(new_user)
+            if bln:
+                alert_sistem(response, bln)
+                return
+            else:
+                alert_sistem(response, bln)
+                return
+
 
 
 if __name__ == "__main__":

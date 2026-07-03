@@ -61,6 +61,7 @@ def criar_usuario(user):
         return True, "Usuário criado com sucesso."
 
     except Exception as e:
+        print(f"Erro => {e}")
         return False, f"Erro ao criar usuário"
 
     finally:

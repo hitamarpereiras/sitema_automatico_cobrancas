@@ -21,7 +21,7 @@ def run_database():
 
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS usuarios (
-                    id INTEGER PRIMARY KEY,
+                    id PRIMARY KEY,
                     usuario TEXT NOT NULL UNIQUE,
                     senha TEXT NOT NULL,
                     admin INTEGER NOT NULL DEFAULT 0,
