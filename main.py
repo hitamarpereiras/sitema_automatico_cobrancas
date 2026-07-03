@@ -107,21 +107,24 @@ class Aplication(ctk.CTk):
         labeName = ctk.CTkLabel(
             self.container,
             text="Nome de Usuário:",
-            width=305
+            width=305,
+            font=("Arial", 12, "bold")
         )
         labeName.pack(anchor="w")
 
         username = ctk.CTkEntry(
             self.container,
             width=200,
-            height=40
+            height=40,
+            placeholder_text="Ex: joaosantos"
         )
         username.pack()
 
         LabelPassw = ctk.CTkLabel(
             self.container,
             text="Senha:",
-            width=245
+            width=245,
+            font=("Arial", 12, "bold")
         )
         LabelPassw.pack(anchor="w")
 
