@@ -32,7 +32,6 @@ def run_database():
             """)
 
             conn.commit()
-            conn.close()
 
             return True, f"Database ON!"
 
@@ -43,3 +42,6 @@ def run_database():
     
     except Exception as e:
         return False, f"Erro inesperado!"
+    
+    finally:
+        cursor.close()
