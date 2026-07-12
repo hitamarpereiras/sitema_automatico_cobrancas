@@ -5,6 +5,7 @@ from PIL import Image
 from services.db_create import run_database
 from services.users import User
 from services.add_users import criar_usuario
+from services.db_login import login_user
 
 ctk.set_appearance_mode("dark")
 
@@ -146,7 +147,7 @@ class Aplication(ctk.CTk):
             text_color="white",
             width=200,
             height=40,
-            command=""
+            command=self.login_now
         )
         btn_login.pack(pady=10)
 
@@ -178,7 +179,24 @@ class Aplication(ctk.CTk):
     else:
         alert_color = "#007900"
 
-    # função de registro
+
+    # Função de login
+
+    def login_now(self):
+        username = self.username.get()
+        password = self.password.get()
+
+        bln, response = login_user(username, password)
+
+        if bln:
+            alert_sistem(response, bln)
+        else:
+            alert_sistem(response, bln)
+
+        return
+
+
+    # Função de registro
 
     def register_user(self):
         username = self.username.get()
