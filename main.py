@@ -75,6 +75,7 @@ class Aplication(ctk.CTk):
             pady=10
         )
 
+
         logo = ctk.CTkLabel(
             self.container,
             image=show_logo(),
@@ -139,6 +140,17 @@ class Aplication(ctk.CTk):
         )
         self.password.pack()
 
+        # Barra de progresso
+        self.progress = ctk.CTkProgressBar(
+            self.container,
+            width=200,
+            height=8,
+            progress_color="#fc3a51",
+            mode="indeterminate"
+        )
+
+        self.progress.pack_forget()
+        
         btn_login = ctk.CTkButton(
             self.container,
             text="Automatizar agora!",
@@ -178,15 +190,37 @@ class Aplication(ctk.CTk):
         alert_color = "#A60000"
     else:
         alert_color = "#007900"
+        
+
+    """ Funções da Interface """
+
+    def start_loading(self):
+        self.progress.pack(pady=(10, 5))
+        self.progress.start()
+
+        self.username.configure(state="disabled")
+        self.password.configure(state="disabled")
+
+
+    def stop_loading(self):
+        self.progress.stop()
+        self.progress.pack_forget()
+
+        self.username.configure(state="normal")
+        self.password.configure(state="normal")
 
 
     # Função de login
-
     def login_now(self):
+        self.start_loading()
+        self.update_idletasks()
+
         username = self.username.get()
         password = self.password.get()
 
         bln, response = login_user(username, password)
+
+        self.stop_loading()
 
         if bln:
             alert_sistem(response, bln)
@@ -197,8 +231,10 @@ class Aplication(ctk.CTk):
 
 
     # Função de registro
-
     def register_user(self):
+        self.start_loading()
+        self.update_idletasks()
+
         username = self.username.get()
         password = self.password.get()
 
@@ -208,6 +244,8 @@ class Aplication(ctk.CTk):
         )
 
         bln, response = User.verify_data(new_user)
+
+        self.stop_loading()
 
         if not bln:
             alert_sistem(response, bln)

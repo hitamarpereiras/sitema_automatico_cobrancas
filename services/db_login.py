@@ -32,7 +32,6 @@ def login_user(username: str, password: str) -> Optional[Dict[str, Any]]:
         user_found = cursor.fetchone()
         
         # Criar dicionário com os dados do usuário
-        print(user_found)
 
         if user_found:
             data_user = {
