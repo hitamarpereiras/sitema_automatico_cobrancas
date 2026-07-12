@@ -178,6 +178,8 @@ class Aplication(ctk.CTk):
     else:
         alert_color = "#007900"
 
+    # função de registro
+
     def register_user(self):
         username = self.username.get()
         password = self.password.get()
