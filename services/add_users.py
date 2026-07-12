@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 
 from services.id_generator import generate_id
+from services.my_hash import hash_password
 
 
 def criar_usuario(user):
@@ -34,6 +35,9 @@ def criar_usuario(user):
         # Admin
         admin = 0
 
+        # Senha
+        passw_hash = hash_password(user.password)
+
         # Cria o usuário
         cursor.execute("""
             INSERT INTO usuarios (
@@ -49,7 +53,7 @@ def criar_usuario(user):
         """, (
             user_id,
             user.username,
-            user.password,
+            passw_hash,
             admin,
             data_criacao,
             None,
