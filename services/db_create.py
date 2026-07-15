@@ -31,6 +31,33 @@ def run_database():
                 )
             """)
 
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS clientes (
+                    id PRIMARY KEY,
+                    nome TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
+                    valor REAL NOT NULL DEFAULT 0.0,
+                    data_vencimento DATE NOT NULL,
+                    data_importacao DATE NOT NULL
+                )
+            """)
+
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS historico_envios (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    cliente_id TEXT NOT NULL,
+
+                    dias_antes INTEGER NOT NULL,
+
+                    data_envio DATE NOT NULL,
+
+                    status TEXT NOT NULL,
+
+                    FOREIGN KEY(cliente_id)
+                        REFERENCES clientes(id)
+                )
+            """)
+
             conn.commit()
 
             return True, f"Database ON!"
@@ -41,6 +68,7 @@ def run_database():
         return False, f"Erro de permissão"
     
     except Exception as e:
+        print(e)
         return False, f"Erro inesperado!"
     
     finally:
