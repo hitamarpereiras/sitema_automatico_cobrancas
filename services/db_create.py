@@ -25,9 +25,9 @@ def run_database():
                     usuario TEXT NOT NULL UNIQUE,
                     senha TEXT NOT NULL,
                     admin INTEGER NOT NULL DEFAULT 0,
-                    data_criacao TEXT NOT NULL,
-                    entrada TEXT,
-                    saida TEXT
+                    data_criacao DATE NOT NULL,
+                    entrada DATE NOT NULL,
+                    saida DATE NOT NULL
                 )
             """)
 
@@ -37,6 +37,7 @@ def run_database():
                     nome TEXT NOT NULL,
                     email TEXT NOT NULL UNIQUE,
                     valor REAL NOT NULL DEFAULT 0.0,
+                    status TEXT NOT NULL DEFAULT 'PENDENTE',
                     data_vencimento DATE NOT NULL,
                     data_importacao DATE NOT NULL
                 )
@@ -52,6 +53,8 @@ def run_database():
                     data_envio DATE NOT NULL,
 
                     status TEXT NOT NULL,
+
+                    erro TEXT,
 
                     FOREIGN KEY(cliente_id)
                         REFERENCES clientes(id)
