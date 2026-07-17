@@ -1,6 +1,8 @@
 import pandas as pd
 import os
-from time import sleep
+import sqlite3
+from datetime import datetime
+from services.id_generator import generate_id
 
 
 class ExcelService:
@@ -11,12 +13,69 @@ class ExcelService:
             self.df["Data_Vencimento"]
         )
 
-    def clientes(self):
-
+    def clients(self):
         return self.df.iterrows()
+    
+    def email_exists(self, cursor, email):
+        cursor.execute(
+            "SELECT 1 FROM clientes WHERE email = ? LIMIT 1",
+            (email, )
+        )
 
-excel = ExcelService(os.path.join("database", "clientes_.xlsx"))
+        return cursor.fetchone() is not None
+    
+    def add_clients(self):
+        conn = sqlite3.connect(
+            os.path.join(
+                "database",
+                "DATABASE.db"
+            )
+        )
 
-for _, cliente in excel.clientes():
-    print(cliente["Nome"])
-    print(cliente["Data_Vencimento"])
+        cursor = conn.cursor()
+
+        try:
+            # Cria o Cliente
+
+            for i, client in self.clients():
+
+                # Verifica se o cliente ja existe por email
+                if self.email_exists(cursor, client["Email"]):
+                    continue
+
+                # ID do cliente
+                id_client = generate_id()
+
+                # Data de criação
+                data_created = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+
+                cursor.execute("""
+                    INSERT INTO clientes (
+                        id,
+                        nome,
+                        email,
+                        valor,
+                        data_vencimento,
+                        data_importacao
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?)
+                """, (
+                    id_client,
+                    client["Nome"],
+                    client["Email"],
+                    client["Valor"],
+                    str(client["Data_Vencimento"]),
+                    data_created
+                ))
+
+                conn.commit()
+
+            return True, "Clientes adicionados com sucesso!"
+
+        except Exception as e:
+            return False, f"Erro ao cadastrar!"
+
+        finally:
+            conn.close() 
+
+

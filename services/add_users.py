@@ -30,7 +30,7 @@ def criar_usuario(user):
         user_id = generate_id()
 
         # Data de criação
-        data_criacao = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        data_criacao = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
 
         # Admin
         admin = 0
@@ -62,10 +62,9 @@ def criar_usuario(user):
 
         conn.commit()
 
-        return True, "Usuário criado com sucesso."
+        return True, f"{user.username} criado com sucesso."
 
     except Exception as e:
-        print(f"Erro => {e}")
         return False, f"Erro ao criar usuário"
 
     finally:

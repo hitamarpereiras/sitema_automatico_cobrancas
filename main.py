@@ -7,6 +7,7 @@ from services.users import User
 from services.add_users import criar_usuario
 from services.db_login import login_user
 
+
 ctk.set_appearance_mode("dark")
 
 
