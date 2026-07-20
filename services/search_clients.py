@@ -24,11 +24,11 @@ def get_pending_clients():
             WHERE status = 'PENDENTE'
         """)
 
-        return True, cursor.fetchall()
+        return cursor.fetchall()
     
     except Exception as e:
         print(e)
-        return False, f"Erro ao buscar clientes!"
+        return f"Erro ao buscar clientes!"
 
     finally:
         conn.close() 

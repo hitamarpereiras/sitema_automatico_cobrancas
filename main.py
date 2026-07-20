@@ -7,6 +7,8 @@ from services.users import User
 from services.add_users import criar_usuario
 from services.db_login import login_user
 
+from services.automate import CanCharge
+
 
 ctk.set_appearance_mode("dark")
 
@@ -263,5 +265,8 @@ class Aplication(ctk.CTk):
 
 
 if __name__ == "__main__":
-    app = Aplication()
-    app.mainloop()
+    cb = CanCharge()
+    bl, reponse = cb.can_charge()
+    print(reponse)
+    #app = Aplication()
+    #app.mainloop()
