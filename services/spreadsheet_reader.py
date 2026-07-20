@@ -16,13 +16,42 @@ class ExcelService:
     def clients(self):
         return self.df.iterrows()
     
+    def get_id(self, cursor, email):
+        cursor.execute(
+            """
+            SELECT id
+            FROM clientes
+            WHERE email = ?
+            LIMIT 1
+            """,
+            (email,)
+        )
+        response = cursor.fetchone()
+
+        if response:
+            return response[0]
+    
     def email_exists(self, cursor, email):
         cursor.execute(
             "SELECT 1 FROM clientes WHERE email = ? LIMIT 1",
             (email, )
         )
-
         return cursor.fetchone() is not None
+    
+    def status_check(self, cursor, cliente_id):
+
+        cursor.execute("""
+            SELECT status
+            FROM clientes
+            WHERE id = ?
+        """, (cliente_id,))
+
+        resultado = cursor.fetchone()
+
+        if resultado:
+            return resultado[0]
+
+        return None
     
     def add_clients(self):
         conn = sqlite3.connect(
@@ -35,47 +64,59 @@ class ExcelService:
         cursor = conn.cursor()
 
         try:
-            # Cria o Cliente
 
             for i, client in self.clients():
 
                 # Verifica se o cliente ja existe por email
                 if self.email_exists(cursor, client["Email"]):
-                    continue
 
-                # ID do cliente
-                id_client = generate_id()
+                    this_id = self.get_id(cursor, client["Email"])
 
-                # Data de criação
-                data_created = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+                    # Verifica se o status esta diferente
+                    if self.status_check(cursor, client["Status"]) != "PENDENTE":
 
-                cursor.execute("""
-                    INSERT INTO clientes (
-                        id,
-                        nome,
-                        email,
-                        valor,
-                        data_vencimento,
-                        data_importacao
-                    )
-                    VALUES (?, ?, ?, ?, ?, ?)
-                """, (
-                    id_client,
-                    client["Nome"],
-                    client["Email"],
-                    client["Valor"],
-                    str(client["Data_Vencimento"]),
-                    data_created
-                ))
+                        cursor.execute("""
+                            UPDATE clientes
+                            SET status = ?
+                            WHERE id = ?
+                        """, (
+                            client["Status"],
+                            this_id 
+                        ))
 
-                conn.commit()
+                else:
 
+                    # ID do cliente
+                    id_client = generate_id()
+
+                    # Data de criação
+                    data_created = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+
+                    cursor.execute("""
+                        INSERT INTO clientes (
+                            id,
+                            nome,
+                            email,
+                            valor,
+                            data_vencimento,
+                            data_importacao
+                        )
+                        VALUES (?, ?, ?, ?, ?, ?)
+                    """, (
+                        id_client,
+                        client["Nome"],
+                        client["Email"],
+                        client["Valor"],
+                        str(client["Data_Vencimento"]),
+                        data_created
+                    ))
+
+            conn.commit()
             return True, "Clientes adicionados com sucesso!"
 
         except Exception as e:
+            print(e)
             return False, f"Erro ao cadastrar!"
 
         finally:
             conn.close() 
-
-
