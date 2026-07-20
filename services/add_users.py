@@ -62,7 +62,7 @@ def criar_usuario(user):
 
         conn.commit()
 
-        return True, f"{user.username} criado com sucesso."
+        return True, f"'{user.username}' criado com sucesso."
 
     except Exception as e:
         return False, f"Erro ao criar usuário"

@@ -26,8 +26,8 @@ def run_database():
                     senha TEXT NOT NULL,
                     admin INTEGER NOT NULL DEFAULT 0,
                     data_criacao DATE NOT NULL,
-                    entrada DATE NOT NULL,
-                    saida DATE NOT NULL
+                    entrada DATE,
+                    saida DATE
                 )
             """)
 
