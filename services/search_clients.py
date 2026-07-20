@@ -24,7 +24,7 @@ def get_pending_clients():
             WHERE status = 'PENDENTE'
         """)
 
-        return cursor.fetchall()
+        return True, cursor.fetchall()
     
     except Exception as e:
         print(e)
