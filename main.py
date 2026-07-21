@@ -1,13 +1,13 @@
 import customtkinter as ctk
+from datetime import datetime
 from tkinter import filedialog, messagebox
-import os
-from PIL import Image
 from services.db_create import run_database
 from services.users import User
 from services.add_users import criar_usuario
 from services.db_login import login_user
-
-from services.automate import CanCharge
+from services.updates import updat_entry
+import os
+from PIL import Image
 
 
 ctk.set_appearance_mode("dark")
@@ -227,6 +227,8 @@ class Aplication(ctk.CTk):
 
         if bln:
             alert_sistem(response, bln)
+            updat_entry(datetime.now(), response["id"])
+            
         else:
             alert_sistem(response, bln)
 
@@ -265,8 +267,5 @@ class Aplication(ctk.CTk):
 
 
 if __name__ == "__main__":
-    cb = CanCharge()
-    bl, reponse = cb.can_charge()
-    print(reponse)
-    #app = Aplication()
-    #app.mainloop()
+    app = Aplication()
+    app.mainloop()
