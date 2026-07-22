@@ -150,6 +150,7 @@ class LoginFrame(ctk.CTkFrame):
             height=40,
             fg_color="white",
             text_color="black",
+            hover_color="#cbcbcb",
             command=self.register
         )
 
@@ -203,11 +204,6 @@ class LoginFrame(ctk.CTkFrame):
         updat_entry(
             datetime.now(),
             response["id"]
-        )
-
-        alert_system(
-            f"{response['usuario']}, bem-vindo!",
-            True
         )
 
         self.open_dashboard(response)

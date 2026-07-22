@@ -1,7 +1,25 @@
 import os
 import customtkinter as ctk
 from tkinter import filedialog
+from tkinter import messagebox
 from PIL import Image
+from services.spreadsheet_reader import ExcelService
+import threading
+
+
+
+def alert_system(msg, success):
+
+    if success:
+        messagebox.showinfo(
+            "Sucesso!",
+            msg
+        )
+    else:
+        messagebox.showerror(
+            "Ops!",
+            msg
+        )
 
 
 def show_logo():
@@ -39,7 +57,7 @@ class DashboardFrame(ctk.CTkFrame):
 
     def build(self):
 
-        ###############################################
+        
         # TOPO
         ###############################################
 
@@ -72,7 +90,7 @@ class DashboardFrame(ctk.CTkFrame):
             pady=(10, 0)
         )
 
-        #####################################################
+        
         # ULTIMO ACESSO
         #####################################################
 
@@ -119,7 +137,7 @@ class DashboardFrame(ctk.CTkFrame):
             pady=(0, 10)
         )
 
-        #####################################################
+        
         # PLANILHA
         #####################################################
 
@@ -159,6 +177,7 @@ class DashboardFrame(ctk.CTkFrame):
             width=220,
             fg_color="white",
             text_color="black",
+            hover_color="#cbcbcb",
             command=self.search_file
         )
 
@@ -171,14 +190,27 @@ class DashboardFrame(ctk.CTkFrame):
             text="Importar Clientes",
             width=220,
             fg_color="#fc3a51",
-            hover_color="#b12a3a"
+            hover_color="#e03549",
+            command=self.add_clients_db
         )
 
         self.btn_import.pack(
             pady=(0, 10)
         )
 
+        # BARRA DE PROGRESSO
         #####################################################
+
+        self.progress = ctk.CTkProgressBar(
+            self,
+            width=220,
+            mode="indeterminate",
+            progress_color="#fc3a51"
+        )
+
+        self.progress.pack_forget()
+
+        
         # RESUMO
         #####################################################
 
@@ -204,54 +236,38 @@ class DashboardFrame(ctk.CTkFrame):
 
         self.lb_clients = ctk.CTkLabel(
             stats,
-            text="Clientes cadastrados : 0"
+            text=f"Total de Clientes : 0"
         )
 
         self.lb_clients.pack()
 
         self.lb_pending = ctk.CTkLabel(
             stats,
-            text="Pendentes : 0"
+            text=f"Atualizações : 0"
         )
 
         self.lb_pending.pack()
 
-        self.lb_paid = ctk.CTkLabel(
-            stats,
-            text="Pagos : 0"
-        )
-
-        self.lb_paid.pack(
-            pady=(0, 10)
-        )
-
-        #####################################################
+       
         # COBRANÇA
         #####################################################
 
-        self.progress = ctk.CTkProgressBar(
-            self,
-            width=300,
-            mode="indeterminate",
-            progress_color="#fc3a51"
-        )
-
-        self.progress.pack_forget()
 
         self.btn_charge = ctk.CTkButton(
             self,
             text="Automatizar Cobranças",
-            width=300,
-            height=45,
-            fg_color="#fc3a51",
-            hover_color="#b12a3a"
+            width=240,
+            height=30,
+            text_color="black",
+            fg_color="white",
+            hover_color="#aab5d2"
         )
 
         self.btn_charge.pack(
-            pady=20
+            pady=10
         )
 
-        #####################################################
+        
         # RODAPÉ
         #####################################################
 
@@ -266,7 +282,24 @@ class DashboardFrame(ctk.CTkFrame):
             pady=10
         )
 
+
+    # BARRA DE PROGRESSO
     #########################################################
+
+    def start_loading(self):
+
+        self.progress.pack(pady=(10, 5))
+
+        self.progress.start()
+
+    def stop_loading(self):
+
+        self.progress.stop()
+
+        self.progress.pack_forget()
+
+
+
     # ESCOLHER PLANILHA
     #########################################################
 
@@ -299,3 +332,63 @@ class DashboardFrame(ctk.CTkFrame):
                 0,
                 filename
             )
+
+
+    # ADICINAR CLIENTES
+    #########################################################
+
+    def add_clients_db(self):
+        path_excel = self.path_entry.get().strip()
+
+        if not path_excel:
+            alert_system("Selecione uma planilha primeiro.", False)
+            return
+
+        self.start_loading()
+        self.btn_import.configure(state="disabled")
+        self.btn_search.configure(state="disabled")
+
+        threading.Thread(
+            target=self.import_clients,
+            args=(path_excel,),
+            daemon=True
+        ).start()
+
+    def import_clients(self, path_excel):
+        try:
+            excel = ExcelService(path_excel)
+            bln, response = excel.add_clients()
+        except Exception as error:
+            bln = False
+            response = f"Erro ao importar: {error}"
+
+        # Widgets do CustomTkinter só podem ser alterados pela thread principal.
+        self.after(0, self.finish_import, bln, response)
+
+    def finish_import(self, bln, response):
+        self.stop_loading()
+        self.btn_import.configure(state="normal")
+        self.btn_search.configure(state="normal")
+
+        if bln:
+            self.lb_clients.configure(
+                text=f"Total de Clientes : {response['total']}"
+            )
+            self.lb_pending.configure(
+                text=f"Atualiza\u00e7\u00f5es : {response['updates']}"
+            )
+
+            alert_system(
+                "Operação efetuada com sucesso!",
+                bln
+            )
+
+        else:
+            alert_system(
+                response,
+                bln
+            )
+
+
+
+

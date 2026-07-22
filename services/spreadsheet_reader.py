@@ -63,9 +63,14 @@ class ExcelService:
 
         cursor = conn.cursor()
 
+        total = 0
+        updates = 0
+
         try:
 
             for i, client in self.clients():
+
+                total = total + 1 
 
                 # Verifica se o cliente ja existe por email
                 if self.email_exists(cursor, client["Email"]):
@@ -83,6 +88,8 @@ class ExcelService:
                             client["Status"],
                             this_id 
                         ))
+
+                        updates = updates + 1
 
                 else:
 
@@ -112,7 +119,14 @@ class ExcelService:
                     ))
 
             conn.commit()
-            return True, "Clientes adicionados com sucesso!"
+
+            result = {
+                "total": total,
+                "updates": updates
+            }
+
+
+            return True, result
 
         except Exception as e:
             print(e)

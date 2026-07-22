@@ -57,7 +57,8 @@ class Application(ctk.CTk):
         if self.current_frame is not None:
             self.current_frame.destroy()
 
-        self.geometry("700x650")
+        #self.geometry("700x660")
+        self.geometry("700x760")
 
         self.current_frame = DashboardFrame(
             self
